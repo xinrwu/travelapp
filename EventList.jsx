@@ -1,57 +1,75 @@
 import React from 'react';
 import ReactDOM from 'react-dom'
-import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc'
+import {arrayMove, SortableContainer, SortableElement} from 'react-sortable-hoc'
 
-const Event = SortableElement(
-    ({data}) =>
-    <li className="event">
+
+class Event extends React.Component {
+    render() {
+        return (
+        <li className="event">
                 <div className="eventName">
-               Event: {data.event}
+               Event: {this.props.data.event}
                </div>
                <div className="time">
-               Time: {data.time_from} - {data.time_to}
+               Time: {this.props.data.time_from} - {this.props.data.time_to}
                </div>
                <div className="location">
-               Location: {data.location}
+               Location: {this.props.data.location}
                </div>
                <div className="notes">
-               Notes: {data.notes}
+               Notes: {this.props.data.notes}
                </div>
-    </li>
-);
+         </li>
+        );
+    }
+}
 
-const SortableEvents = SortableContainer(({items}) => {
-    return (
-        <ul>
-            {items.map((event, index) =>
-                 <Event key={`event-${index}`}
-                        index={index}
-                        data={event}/>
-            )}
-        </ul>
-    );
-});
+
+
+const SortableEventElement = SortableElement(
+    ({data}) => <Event data={data}/>
+);
+// do something with index?
+const SortableEvents = SortableContainer(
+    ({data}) => {
+        return (
+            <ul>
+                {data.map((event, index) =>
+                    <SortableEventElement key={`event-${index}`}
+                            index={index}
+                            data={event}/>
+                )}
+            </ul>
+        );
+    }
+);
 
 class EventMaker extends React.Component {
     constructor(props) {
         super(props);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
-        var form = {event: '', location: '', time_from: '', time_to: '', notes: ''};
-        this.state = {items: form};
+        this.state = {  event: '', 
+                        location: '', 
+                        time_from: '', 
+                        time_to: '', 
+                        notes: ''};
     }
     
     handleChange(e) {
-        // probably bad to do this
-        var form = this.state.items; 
-        form[e.target.name] = e.target.value;
-        this.setState({items: form});
+        const target = e.target
+        const value = target.value
+        const name = target.name
+        this.setState({
+            [name]: value
+        });
     }
     
     handleSubmit(e) {
         // prevents the page from reloading
         e.preventDefault();
-        this.props.onSubmit(this.state.items);
+        console.log(this.state);
+        this.props.onSubmit(this.state);
     }
     
     render() {
@@ -66,7 +84,7 @@ class EventMaker extends React.Component {
                     <br/>
                     <input onChange={this.handleChange} value={this.state.time_to} type="time" name="time_to"/>
                     <br/>
-                    <textarea onChange={this.handleChange} value={this.state.notes} name="notes" value="notes"/>
+                    <textarea onChange={this.handleChange} value={this.state.notes} name="notes" placeholder="Notes"/>
                     <button>Add</button>
                 </form>
             </div>
@@ -78,13 +96,15 @@ class EventList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            items: this.props.data
+            items: this.props.data,
+            area: this.props.area
          }
         this.handleEventsUpdate = this.handleEventsUpdate.bind(this);
         this.onSortEnd = this.onSortEnd.bind(this);
     }
 
     handleEventsUpdate(e) {
+        console.log(e);
         this.setState(prevState => ({
             items: [...prevState.items, e],
         }));
@@ -95,11 +115,12 @@ class EventList extends React.Component {
             items: arrayMove(this.state.items, oldIndex, newIndex)
         });
     }
+
     render() {
         return (
             <div className="eventList">
-                <h2> Area: {this.props.destination} </h2>
-                <SortableEvents items={this.state.items} onSortEnd={this.onSortEnd}/>
+                <h2> Area: {this.state.area} </h2>
+                <SortableEvents data={this.state.items} onSortEnd={this.onSortEnd}/>
                 <EventMaker onSubmit={this.handleEventsUpdate}/>
             </div>
         );

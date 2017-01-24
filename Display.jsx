@@ -35,6 +35,27 @@ var travelData = [
 				}
 			]
 		}
+	],
+	[
+		{
+			"destination": "area1", 
+			"objectives": [
+				{
+					"time_from": "11:30am",
+					"time_to": "12:30pm",
+					"event": "something1",
+					"location": "Ul'dah",
+					"notes": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+				},
+				{
+				"time_from": "12:50pm",
+				"time_to": "3:30pm",
+				"event": "something2",
+				"location": "Gridania",
+				"notes": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+				}
+			]
+		}
 	]
 ]
 

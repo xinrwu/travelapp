@@ -60,7 +60,7 @@ class Day extends React.Component {
          */
         var areaNodes = this.props.data.map(function(area) {
             return (
-                <EventList area={area.area} data={area.objectives}/>
+                <EventList area={area.destination} data={area.objectives}/>
             );
         });
         return (
